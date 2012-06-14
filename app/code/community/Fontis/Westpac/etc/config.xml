@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Fontis Westpac PayWay Extension
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so they can send you a copy immediately.
+ *
+ * @category   Fontis
+ * @package    Fontis_Westpac
+ * @author     Chris Norton
+ * @copyright  Copyright (c) 2008 Fontis Pty. Ltd. (http://www.fontis.com.au)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+-->
+<config>
+    <modules>
+        <Fontis_Westpac>
+            <version>2.1.3</version>
+            <depends>
+                <Mage_Payment />
+            </depends>
+        </Fontis_Westpac>
+    </modules>
+    <global>
+    	<models>
+    		<westpac>
+	    		<class>Fontis_Westpac_Model</class>
+	    	</westpac>
+    	</models>
+    	<helpers>
+    		<westpac>
+    			<class>Fontis_Westpac_Helper</class>
+    		</westpac>
+    	</helpers>
+        <resources>
+            <westpac_setup>
+                <setup>
+                    <module>Fontis_Westpac</module>
+                    <class>Fontis_Westpac_Model_Mysql4_Setup</class>
+                </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </westpac_setup>
+            <westpac_write>
+                <connection>
+                    <use>local_write</use>
+                </connection>
+            </westpac_write>
+            <westpac_read>
+                <connection>
+                    <use>local_read</use>
+                </connection>
+            </westpac_read>
+        </resources>
+    </global>
+	<default>
+        <payment>
+            <payway_api>
+            	<active>0</active>
+            	<model>westpac/payWay_api</model>
+            	<title>Credit Card (via Westpac PayWay)</title>
+            	<merchant_id>TEST</merchant_id>
+            	<username>ABC0001</username>
+            	<password>TestPassword</password>
+            	<certificate>/var/certs/ccapi.pem</certificate>      	
+            	<allowspecific>0</allowspecific>
+            	<debug>0</debug>
+            	<test>1</test>
+            	<cctypes>VI,MC,AE,DI</cctypes>
+            	<payment_action>authorize_capture</payment_action>
+            </payway_api>
+            <quickgateway_api>
+            	<active>0</active>
+            	<model>westpac/quickGateway_api</model>
+            	<title>Credit Card (via Westpac QuickGateway)</title>
+            	<merchant_id>TEST</merchant_id>
+            	<username>ABC0001</username>
+            	<password>TestPassword</password>
+            	<certificate>/var/certs/ccapi.pem</certificate>
+            	<url>https://ccapi.client.qvalent.com/post/CreditCardAPIReceiver</url>
+            	<allowspecific>0</allowspecific>
+            	<debug>0</debug>
+            	<cctypes>VI,MC,AE,DI</cctypes>
+            	<payment_action>authorize_capture</payment_action>
+            </quickgateway_api>
+        </payment>
+    </default>
+</config>
