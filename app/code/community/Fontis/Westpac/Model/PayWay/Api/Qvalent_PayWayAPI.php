@@ -13,8 +13,8 @@
 # where (x, y, z) are numbers in [0-9]
 function check_version($currentversion, $requiredversion)
 {
-   list($majorC, $minorC, $editC) = split('[/.-]', $currentversion);
-   list($majorR, $minorR, $editR) = split('[/.-]', $requiredversion);
+   list($majorC, $minorC, $editC) = preg_split('/[\/.-]/', $currentversion);
+   list($majorR, $minorR, $editR) = preg_split('/[\/.-]/', $requiredversion);
    
    if ($majorC > $majorR) return true;
    if ($majorC < $majorR) return false;
@@ -200,13 +200,13 @@ class Qvalent_PayWayAPI
     function parseResponseParameters( $parametersString )
     {
         // Split the message at the field breaks
-        $parameterArray = split( "&", $parametersString );
+        $parameterArray = explode( "&", $parametersString );
         $props = array();
 
         // Loop through each parameter provided
         foreach ( $parameterArray as $parameter )
         {
-            list( $paramName, $paramValue ) = split( "=", $parameter );
+            list( $paramName, $paramValue ) = explode( "=", $parameter );
             $props[ urldecode( $paramName ) ] = urldecode( $paramValue );
         }
         return $props;
