@@ -156,8 +156,8 @@ class Fontis_Westpac_Model_PayWay_Api extends Mage_Payment_Model_Method_Cc
 
 		$orderNumber = $payment->getOrder()->getStoreId() . str_pad($payment->getOrder()->getQuoteId(), 9, '0', STR_PAD_LEFT);
 
-		if($this->getDebug()) { 
-			$logger->info(print_r($payment->getOrder()->getData(), true));
+        if($this->getDebug()) { 
+            $logger->info('Order Number: ' . $orderNumber);
 		}
 
 		$params = array();
