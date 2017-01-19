@@ -94,12 +94,14 @@ class Fontis_Westpac_Model_PayWay_Api extends Mage_Payment_Model_Method_Cc
 
 	public function capture(Varien_Object $payment, $amount)
 	{
+		$checkoutHelperUrl 	= Mage::helper('checkout/url');
+		$session        	= Mage::getSingleton('customer/session');
+		$action 			= Mage::app()->getResponse();
+
 		$payment->setCcTransId($payment->getOrder()->getIncrementId() . date("His"));
 
 		$this->setAmount($amount)->setPayment($payment);
-		
 		$result = $this->_call($payment);
-		
 		if($result === false)
 		{
 			$e = $this->getError();
@@ -108,6 +110,9 @@ class Fontis_Westpac_Model_PayWay_Api extends Mage_Payment_Model_Method_Cc
 			} else {
 				$message = Mage::helper('westpac')->__('There has been an error processing your payment. Please try later or contact us for help.');
 			}
+			//Add error message to the session and set redirect url to checkout/cart so the message is displayed to user in checkout page
+			$session->addError($message);
+			$action->setRedirect($checkoutHelperUrl);
 			Mage::throwException($message);
 		}
 		else
@@ -120,12 +125,19 @@ class Fontis_Westpac_Model_PayWay_Api extends Mage_Payment_Model_Method_Cc
 			{
                 Mage::log($result);
                 if(isset($result["response.responseCode"]) && isset($result["response.text"])) {
-    				Mage::throwException("Error " . $result["response.responseCode"] . ": " . $result["response.text"]);
+					$message = "Error " . $result["response.responseCode"] . ": " . $result["response.text"];
     			} elseif(isset($result["response.text"])) {
-    			    Mage::throwException("Error: " . $result["response.text"]);
+					$message = "Error: " . $result["response.text"];
     			} else {
-    			    Mage::throwException("There has been an error processing your payment. Please try later or contact us for help.");
+					$message = "There has been an error processing your payment. Please try later or contact us for help.";
     			}
+
+				//Adding general error message to user so they are not aware of other technical errors in detail.
+				$customer_message = "There has been an error processing your payment. Please try again later.";
+				//Add error message to the session and set redirect url to checkout/cart so the message is displayed to user in checkout page
+				$session->addError($customer_message);
+				$action->setRedirect($checkoutHelperUrl);
+				Mage::throwException($message);
 			}
 		}
 	}
